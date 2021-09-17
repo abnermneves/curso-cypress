@@ -19,8 +19,10 @@ import './commands'
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
-before(() => {
+// precisa ser beforeEach pra manter os casos de teste independentes
+// before executa uma vez antes de todos os testes
+beforeEach(() => {
     // cy.server - para route e request
-    cy.server();
-    cy.createOng();
+    cy.server()
+    cy.createOng()
 });

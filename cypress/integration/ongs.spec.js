@@ -1,37 +1,67 @@
 /// <reference types="cypress" />
 
+import Logon from '../support/pages/Logon'
+import Register from '../support/pages/Register'
+import Profile from '../support/pages/Profile'
+import NewIncident from '../support/pages/NewIncident'
+
 describe('Ongs', () => {
-    it('devem poder realizar um cadastro', () => {
-        cy.visit('http://localhost:3000/register');
-        // cy.get - busca um elemento
-        // .type - insere um texto
-        cy.get('[data-cy=name]').type('Dogs queridos');
-        cy.get('[data-cy=email]').type('dogs@mail.com');
-        cy.get('[data-cy=whatsapp]').type('51999999999');
-        cy.get('[data-cy=city]').type('Porto Alegre');
-        cy.get('[data-cy=uf]').type('RS');
+  it('devem poder realizar um cadastro', () => {
+    // cy.get - busca um elemento
+    // .type - insere um texto
 
-        // routing
-        // start server com cy.server()
-        // criar uma rota com cy.route()
-        // atribuir rota a um alias
-        // esperar com cy.wait e fazer uma validação
+    // routing -- escuta onde a aplicação está se conectando
+    // 1. start server com cy.server() (passo feito no beforeEach)
+    // 2. criar uma rota com cy.route()
+    // 3. atribuir rota a um alias
+    // 4. esperar com cy.wait e fazer uma validação
 
-        cy.route('POST', '**/ongs').as('postOng');
+    // acessar cadastro
+    // preencher cadastro
+    // validar cadastro
 
-        cy.get('[data-cy=submit]').click();
+    Register.acessarCadastro()
+    Register.preencherCadastro()
+    Register.validarCadastro()
+  })
 
-        cy.wait('@postOng').then((xhr) => {
-            expect(xhr.status).be.eq(200);
-            expect(xhr.response.body).has.property('id');
-            expect(xhr.response.body.id).is.not.null;
-        });
+  it('devem poder realizar um login no sistema', () => {
+    // ações:
+    // acessar login
+    // preencher login
 
-    });
+    // elementos:
+    // id
+    // button-login
 
-    it('deve poder realizar um login no sistema', () => {
-        cy.visit('http://localhost:3000/');
-        cy.get('input').type(Cypress.env('createdOngId'));
-        cy.get('.button').click();
-    });
-});
+    Logon.acessarLogin()
+    Logon.preencherLogin()
+
+  });
+
+  it('devem poder fazer logout', () => {
+    cy.login()
+    Profile.clicarNoBotaoLogout()
+  })
+
+  it('devem poder cadastrar novos casos', () => {
+    cy.login()
+    Profile.clicarNoBotaoCadastrarNovosCasos()
+    NewIncident.preencherNovoCaso()
+    NewIncident.validarCadastroNovoCaso()
+  })
+
+  it('devem poder excluir um caso', () => {
+    cy.createNewIncident()
+    cy.createNewIncident()
+    cy.login()
+
+    Profile.clicarNoBotaoDeletarPrimeiroCaso()
+    Profile.validarExclusaoDeCaso()
+  })
+})
+
+// page objects
+// cada página vai ter duas coisas:
+// 1. ações
+// 2. elementos
